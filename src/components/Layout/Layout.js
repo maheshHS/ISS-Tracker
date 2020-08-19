@@ -1,13 +1,32 @@
 import React from 'react';
 import Map from '../Map/Map';
+import Navbar from '../Navbar/Navbar';
+import axios from 'axios';
 
 
 class Layout extends React.Component {
+    state = {
+        coordinates: null
+    }
+
+    componentDidMount() {
+        axios.get("http://api.open-notify.org/iss-now.json")
+        .then((response) => {
+            let cords = Object.values(response.data.iss_position).map((val) => {
+                return parseFloat(val); 
+            });
+            this.setState({coordinates: cords});
+        })
+    }
     render() {
+        let map = null;
+        if(this.state.coordinates){
+            map = <Map cods={this.state.coordinates}></Map>;
+        }
         return(
             <div>
-
-                <Map/>
+               <Navbar></Navbar>
+                {map}
             </div>
         );
     }
