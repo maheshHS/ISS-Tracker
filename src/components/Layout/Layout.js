@@ -10,14 +10,19 @@ class Layout extends React.Component {
     }
 
     componentDidMount() {
-        axios.get("http://api.open-notify.org/iss-now.json")
+        this.HitApi = setInterval(() => { axios.get("http://api.open-notify.org/iss-now.json")
         .then((response) => {
             let cords = Object.values(response.data.iss_position).map((val) => {
                 return parseFloat(val); 
             });
             this.setState({coordinates: cords});
-        })
+        })}, 10000);
     }
+
+    componentWillUnmount() {
+        clearInterval(this.HitApi);
+    }
+
     render() {
         let map = null;
         if(this.state.coordinates){
